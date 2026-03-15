@@ -301,6 +301,186 @@ a {
   vertical-align: baseline;
 }
 
+/* MARKDOWN HEADINGS */
+.post-body h1 {
+  font-size: 2rem;
+  color: var(--text-bright);
+  margin-top: 2.5rem;
+  margin-bottom: 1rem;
+  letter-spacing: -0.03em;
+  line-height: 1.3;
+}
+
+.post-body h2 {
+  font-size: 1.6rem;
+  color: var(--text-bright);
+  margin-top: 2.5rem;
+  margin-bottom: 0.75rem;
+  letter-spacing: -0.02em;
+  line-height: 1.3;
+}
+
+.post-body h3 {
+  font-size: 1.3rem;
+  color: var(--text-bright);
+  margin-top: 2rem;
+  margin-bottom: 0.75rem;
+  letter-spacing: -0.01em;
+  line-height: 1.4;
+}
+
+.post-body h4 {
+  font-size: 1.1rem;
+  color: var(--text-bright);
+  margin-top: 2rem;
+  margin-bottom: 0.5rem;
+  line-height: 1.4;
+}
+
+.post-body h5,
+.post-body h6 {
+  font-size: 1rem;
+  color: var(--text-dim);
+  margin-top: 1.5rem;
+  margin-bottom: 0.5rem;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+/* MARKDOWN LISTS */
+.post-body ul,
+.post-body ol {
+  padding-left: 1.5rem;
+  margin-bottom: 1.5rem;
+}
+
+.post-body ul {
+  list-style-type: disc;
+}
+
+.post-body ol {
+  list-style-type: decimal;
+}
+
+.post-body li {
+  margin-bottom: 0.5rem;
+  line-height: 1.8;
+}
+
+.post-body li > ul,
+.post-body li > ol {
+  margin-top: 0.5rem;
+  margin-bottom: 0;
+}
+
+/* TASK LISTS (GFM) */
+.post-body ul.contains-task-list {
+  list-style: none;
+  padding-left: 0;
+}
+
+.post-body li.task-list-item {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.6rem;
+}
+
+.post-body li.task-list-item input[type="checkbox"] {
+  margin-top: 0.5rem;
+  accent-color: var(--text-muted);
+}
+
+/* MARKDOWN BLOCKQUOTES */
+.post-body blockquote {
+  border-left: 3px solid rgba(255, 255, 255, 0.15);
+  padding: 0.75rem 1.5rem;
+  margin: 1.5rem 0;
+  color: var(--text-muted);
+  font-style: italic;
+  background: rgba(255, 255, 255, 0.02);
+  border-radius: 0 8px 8px 0;
+}
+
+.post-body blockquote p:last-child {
+  margin-bottom: 0;
+}
+
+/* MARKDOWN LINKS */
+.post-body a {
+  color: var(--text-bright);
+  text-decoration: underline;
+  text-underline-offset: 3px;
+  text-decoration-color: rgba(255, 255, 255, 0.25);
+  transition: text-decoration-color 0.2s;
+}
+
+.post-body a:hover {
+  text-decoration-color: rgba(255, 255, 255, 0.7);
+}
+
+/* MARKDOWN IMAGES */
+.post-body img {
+  max-width: 100%;
+  height: auto;
+  border-radius: 12px;
+  margin: 2rem 0;
+}
+
+/* MARKDOWN TABLES (GFM) */
+.post-body table {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 1.5rem 0;
+  font-size: 0.95rem;
+}
+
+.post-body th {
+  text-align: left;
+  padding: 0.75rem 1rem;
+  border-bottom: 2px solid rgba(255, 255, 255, 0.1);
+  color: var(--text-bright);
+  font-weight: 600;
+}
+
+.post-body td {
+  padding: 0.65rem 1rem;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.post-body tr:hover td {
+  background: rgba(255, 255, 255, 0.02);
+}
+
+/* MARKDOWN HORIZONTAL RULE */
+.post-body hr {
+  border: none;
+  height: 1px;
+  background: rgba(255, 255, 255, 0.1);
+  margin: 2.5rem 0;
+}
+
+/* MARKDOWN BOLD & ITALIC */
+.post-body strong {
+  color: var(--text-bright);
+  font-weight: 600;
+}
+
+.post-body em {
+  font-style: italic;
+}
+
+/* MARKDOWN STRIKETHROUGH (GFM) */
+.post-body del {
+  color: var(--text-dim);
+  text-decoration: line-through;
+}
+
+/* HIGHLIGHT.JS OVERRIDES */
+.post-body .hljs {
+  background: transparent !important;
+  padding: 0 !important;
+}
+
 /* FOOTER */
 .footer {
   padding: 4rem var(--space-xl);

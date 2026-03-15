@@ -2,14 +2,9 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import { getAllPosts, getPostDetail } from "@/lib/api";
 import LocalizedDate from "@/components/LocalizedDate";
+import { marked } from "marked";
 
-export async function generateStaticParams() {
-  const posts = await getAllPosts();
-  return posts.map((post) => ({ 
-    slug: post.slug,
-    id: String(post.id)
-  }));
-}
+export const runtime = 'edge';
 
 export async function generateMetadata({ params }) {
   const { slug, id } = await params;
@@ -29,45 +24,7 @@ export default async function BlogPost({ params }) {
     notFound();
   }
 
-  // Basic markdown-like parser for code snippets
-  const renderContent = (content) => {
-    if (!content) return null;
-    
-    // Split by triple backticks for code blocks
-    const sections = content.split(/(```[\s\S]*?```)/g);
-    
-    return sections.map((section, idx) => {
-      if (section.startsWith('```') && section.endsWith('```')) {
-        const code = section.slice(3, -3).trim();
-        return (
-          <pre key={idx}>
-            <code>{code}</code>
-          </pre>
-        );
-      }
-      
-      // For non-code sections, handle paragraphs and inline code
-      return section.split('\n\n').map((para, pIdx) => {
-        if (!para.trim()) return null;
-        
-        // Handle inline code (single backticks)
-        const parts = para.split(/(`[^`]+`)/g);
-        
-        return (
-          <p key={`${idx}-${pIdx}`}>
-            {parts.map((part, kIdx) => {
-              if (part.startsWith('`') && part.endsWith('`')) {
-                return (
-                  <code key={kIdx}>{part.slice(1, -1)}</code>
-                );
-              }
-              return part;
-            })}
-          </p>
-        );
-      });
-    });
-  };
+  const htmlContent = marked.parse(post.content || "");
 
   return (
     <article className="post-page" id="post-article">
@@ -87,9 +44,10 @@ export default async function BlogPost({ params }) {
         </div>
       </header>
 
-      <div className="post-body">
-        {renderContent(post.content)}
-      </div>
+      <div 
+        className="post-body"
+        dangerouslySetInnerHTML={{ __html: htmlContent }}
+      />
     </article>
   );
 }
