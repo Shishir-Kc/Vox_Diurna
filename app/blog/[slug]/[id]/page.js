@@ -4,7 +4,7 @@ import { getAllPosts, getPostDetail } from "@/lib/api";
 import LocalizedDate from "@/components/LocalizedDate";
 import { marked } from "marked";
 
-export const runtime = "nodejs";
+export const runtime = "edge";
 
 export async function generateMetadata({ params }) {
   const { slug, id } = await params;
