@@ -3,6 +3,8 @@ import { getAllPosts } from "@/lib/api";
 import LocalizedDate from "@/components/LocalizedDate";
 import EmptyState from "@/components/EmptyState";
 
+export const runtime = "edge";
+
 const categoryIcons = {
   Architecture: "◈",
   Culture: "◉",

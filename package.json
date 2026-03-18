@@ -5,8 +5,9 @@
   "scripts": {
     "dev": "next dev",
     "build": "next build",
-    "build:cloudflare": "npm run build && npx @opennextjs/cloudflare@latest build",
-    "start": "next start"
+    "build:cloudflare": "npx @cloudflare/next-on-pages",
+    "start": "next start",
+    "preview": "npm run build:cloudflare && wrangler pages dev"
   },
   "dependencies": {
     "marked": "^17.0.4",
@@ -16,6 +17,7 @@
     "server-only": "^0.0.1"
   },
   "devDependencies": {
-    "@opennextjs/cloudflare": "^1.17.1"
+    "@cloudflare/next-on-pages": "^1",
+    "wrangler": "^3"
   }
 }
