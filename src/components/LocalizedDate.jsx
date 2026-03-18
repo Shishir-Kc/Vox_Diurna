@@ -1,6 +1,4 @@
-'use client';
-
-import { useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 
 export default function LocalizedDate({ dateStr }) {
   const [formattedDate, setFormattedDate] = useState('');
@@ -9,7 +7,6 @@ export default function LocalizedDate({ dateStr }) {
     if (!dateStr) return;
     
     // Ensure the date string is treated as UTC if it doesn't have an offset
-    // Backend uses datetime.utcnow() which usually lacks the 'Z' suffix in string representation
     const utcDateStr = dateStr.endsWith('Z') || dateStr.includes('+') 
       ? dateStr 
       : `${dateStr}Z`;
