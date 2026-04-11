@@ -13,7 +13,7 @@ export default defineConfig({
   server: {
     proxy: {
       '/api': {
-        target: 'https://vox-diurna-backend.onrender.com',
+        target: 'https://vox-diurnabackend.fastapicloud.dev',
         changeOrigin: true,
       },
     },
