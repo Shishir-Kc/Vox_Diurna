@@ -6,6 +6,14 @@ const API_URL = `${API_BASE_URL}/api/v1/posts`;
 const POSTS_CACHE_KEY = 'vox_diurna_posts_cache';
 const DETAIL_CACHE_KEY_PREFIX = 'vox_diurna_post_';
 
+function safeParse(json) {
+  try {
+    return JSON.parse(json);
+  } catch {
+    return null;
+  }
+}
+
 export async function getAllPosts() {
   try {
     const res = await fetch(API_URL, { 
@@ -16,7 +24,7 @@ export async function getAllPosts() {
     
     if (!res.ok) {
       const cached = localStorage.getItem(POSTS_CACHE_KEY);
-      return cached ? JSON.parse(cached) : [];
+      return safeParse(cached) ?? [];
     }
     
     const data = await res.json();
@@ -39,7 +47,7 @@ export async function getAllPosts() {
     return posts;
   } catch (error) {
     const cached = localStorage.getItem(POSTS_CACHE_KEY);
-    return cached ? JSON.parse(cached) : [];
+    return safeParse(cached) ?? [];
   }
 }
 
@@ -54,7 +62,7 @@ export async function getPostDetail(slug, id) {
     
     if (!res.ok) {
       const cached = localStorage.getItem(specificCacheKey);
-      return cached ? JSON.parse(cached) : null;
+      return safeParse(cached);
     }
     
     const data = await res.json();
@@ -64,6 +72,6 @@ export async function getPostDetail(slug, id) {
     return data;
   } catch (error) {
     const cached = localStorage.getItem(specificCacheKey);
-    return cached ? JSON.parse(cached) : null;
+    return safeParse(cached);
   }
 }

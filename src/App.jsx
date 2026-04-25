@@ -3,6 +3,7 @@ import { Routes, Route, Link } from 'react-router-dom';
 import Home from '@/pages/Home';
 import PostDetail from '@/pages/PostDetail';
 import NotFound from '@/pages/NotFound';
+import About from '@/pages/About';
 
 export default function App() {
   return (
@@ -14,12 +15,14 @@ export default function App() {
         </Link>
         <ul className="navbar-links">
           <li><Link to="/">Home</Link></li>
+          <li><Link to="/about">About</Link></li>
         </ul>
       </nav>
 
       <main>
         <Routes>
           <Route path="/" element={<Home />} />
+          <Route path="/about" element={<About />} />
           <Route path="/blog/:slug/:id" element={<PostDetail />} />
           <Route path="*" element={<NotFound />} />
         </Routes>
@@ -28,7 +31,8 @@ export default function App() {
       <footer className="footer" id="site-footer">
         <div className="footer-content">
           <div className="footer-brand-group">
-            <span className="footer-brand">Vox Diurna</span>
+            <Link to="/" className="footer-brand">Vox Diurna</Link>
+            <Link to="/about" className="footer-text">About</Link>
             <span className="footer-text">© 2026 — Words that matter, daily.</span>
           </div>
           

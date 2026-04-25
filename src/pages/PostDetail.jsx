@@ -22,6 +22,46 @@ export default function PostDetail() {
         }
         setPost(data);
         document.title = `${data.title} — Vox Diurna`;
+        
+        const metaDesc = document.querySelector('meta[name="description"]');
+        if (metaDesc) {
+          metaDesc.setAttribute('content', data.excerpt || `Read ${data.title} on Vox Diurna by Shishir Khatri, Nepali entrepreneur and backend developer.`);
+        }
+        
+        document.querySelector('meta[property="og:title"]')?.setAttribute('content', `${data.title} — Vox Diurna`);
+        const ogDesc = document.querySelector('meta[property="og:description"]');
+        if (ogDesc) {
+          ogDesc.setAttribute('content', data.excerpt || `Read ${data.title} on Vox Diurna`);
+        }
+        document.querySelector('meta[property="og:url"]')?.setAttribute('content', `https://blog.shishirkhatri.com.np/blog/${slug}/${id}`);
+        
+        const schema = {
+          "@context": "https://schema.org",
+          "@type": "BlogPosting",
+          "headline": data.title,
+          "description": data.excerpt,
+          "author": {
+            "@type": "Person",
+            "name": "Shishir Khatri",
+            "url": "https://shishirkhatri.com.np"
+          },
+          "publisher": {
+            "@type": "Person",
+            "name": "Shishir Khatri"
+          },
+          "datePublished": data.date,
+          "url": `https://blog.shishirkhatri.com.np/blog/${slug}/${id}`,
+          "articleSection": data.category
+        };
+        
+        let existingSchema = document.querySelector('script[type="application/ld+json"]:last-of-type');
+        if (existingSchema) {
+          existingSchema.remove();
+        }
+        const script = document.createElement('script');
+        script.type = 'application/ld+json';
+        script.textContent = JSON.stringify(schema);
+        document.head.appendChild(script);
       } catch (error) {
         console.error('Failed to load post:', error);
       } finally {
