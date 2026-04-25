@@ -2,7 +2,9 @@ import React, { useEffect, useState } from 'react';
 import { Link, useParams, useNavigate } from 'react-router-dom';
 import { getPostDetail } from '@/lib/api';
 import LocalizedDate from '@/components/LocalizedDate';
-import { marked } from 'marked';
+import ReactMarkdown from 'react-markdown';
+import remarkGfm from 'remark-gfm';
+import remarkBreaks from 'remark-breaks';
 
 export default function PostDetail() {
   const { slug, id } = useParams();
@@ -45,7 +47,6 @@ export default function PostDetail() {
 
   if (!post) return null;
 
-  const htmlContent = marked.parse(post.content || "");
 
   return (
     <article className="post-page" id="post-article">
@@ -65,10 +66,11 @@ export default function PostDetail() {
         </div>
       </header>
 
-      <div 
-        className="post-body"
-        dangerouslySetInnerHTML={{ __html: htmlContent }}
-      />
+      <div className="post-body">
+        <ReactMarkdown remarkPlugins={[remarkGfm, remarkBreaks]}>
+          {post.content || ""}
+        </ReactMarkdown>
+      </div>
     </article>
   );
 }
