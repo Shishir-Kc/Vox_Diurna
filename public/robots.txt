@@ -1,0 +1,3 @@
+User-agent: *
+Allow: /
+Sitemap: https://blog.shishirkhatri.com.np/sitemap.xml
