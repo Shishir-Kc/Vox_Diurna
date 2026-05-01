@@ -552,75 +552,232 @@ a {
   }
 }
 
-/* SKELETON LOADING */
+
+/* ============================================
+   SKELETON LOADING — Premium Shimmer System
+   ============================================ */
+
+/* Base shimmer block */
 .skeleton {
-  background: var(--bg-surface);
+  background: linear-gradient(135deg, #1c1c1c 0%, #222 100%);
+  border-radius: 6px;
   position: relative;
   overflow: hidden;
-  border-radius: var(--radius-sm);
+  isolation: isolate;
 }
 
 .skeleton::after {
   content: "";
   position: absolute;
-  top: 0;
-  right: 0;
-  bottom: 0;
-  left: 0;
+  inset: 0;
   transform: translateX(-100%);
   background: linear-gradient(
-    90deg,
-    transparent 0,
-    rgba(255, 255, 255, 0.03) 20%,
-    rgba(255, 255, 255, 0.05) 60%,
-    transparent 100%
+    105deg,
+    transparent       0%,
+    rgba(255,255,255,0.00) 30%,
+    rgba(255,255,255,0.055) 48%,
+    rgba(255,255,255,0.09) 50%,
+    rgba(255,255,255,0.055) 52%,
+    rgba(255,255,255,0.00) 70%,
+    transparent       100%
   );
-  animation: shimmer-skeleton 2s infinite;
+  animation: sk-shimmer 1.8s ease-in-out infinite;
 }
 
-@keyframes shimmer-skeleton {
-  100% {
-    transform: translateX(100%);
-  }
+@keyframes sk-shimmer {
+  0%   { transform: translateX(-100%); }
+  100% { transform: translateX(200%); }
 }
 
+/* Card container — mirrors .post-card exactly */
 .skeleton-card {
-  padding: var(--space-lg);
   background: var(--bg-surface);
   border: 1px solid var(--border-subtle);
   border-radius: var(--radius-md);
   display: flex;
   flex-direction: column;
-  gap: var(--space-sm);
+  overflow: hidden;
+  animation: sk-fade-in 0.4s ease both;
 }
 
+.skeleton-card:nth-child(1) { animation-delay: 0.00s; }
+.skeleton-card:nth-child(2) { animation-delay: 0.08s; }
+.skeleton-card:nth-child(3) { animation-delay: 0.16s; }
+
+@keyframes sk-fade-in {
+  from { opacity: 0; transform: translateY(10px); }
+  to   { opacity: 1; transform: translateY(0);    }
+}
+
+/* Image / header area — mirrors .post-card-image */
+.skeleton-card-image {
+  height: 80px;
+
+  border-bottom: 1px solid var(--border-subtle);
+  padding: var(--space-lg);
+  display: flex;
+  align-items: flex-end;
+  gap: 0.75rem;
+  position: relative;
+  overflow: hidden;
+}
+
+.skeleton-card-image::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  transform: translateX(-100%);
+  background: linear-gradient(
+    105deg,
+    transparent 0%,
+    rgba(255,255,255,0.04) 48%,
+    rgba(255,255,255,0.07) 50%,
+    rgba(255,255,255,0.04) 52%,
+    transparent 100%
+  );
+  animation: sk-shimmer 1.8s ease-in-out infinite;
+  animation-delay: 0.15s;
+}
+
+/* Icon placeholder circle */
+.skeleton-icon {
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+
+/* Category tag pill */
 .skeleton-category {
-  width: 60px;
+  width: 56px;
   height: 12px;
-  margin-bottom: 0.5rem;
+  border-radius: 100px;
 }
 
+/* Body section */
+.skeleton-card-body {
+  padding: var(--space-lg);
+  display: flex;
+  flex-direction: column;
+  gap: 0.6rem;
+  flex: 1;
+}
+
+/* Date line */
+.skeleton-date {
+  width: 72px;
+  height: 10px;
+  border-radius: 4px;
+  margin-bottom: 0.25rem;
+}
+
+/* Title — two lines */
 .skeleton-title {
-  width: 80%;
-  height: 24px;
-  margin-bottom: 0.5rem;
+  width: 88%;
+  height: 20px;
+  border-radius: 5px;
 }
 
+.skeleton-title.line2 {
+  width: 60%;
+  height: 20px;
+}
+
+/* Excerpt lines */
 .skeleton-excerpt {
   width: 100%;
+  height: 13px;
+  border-radius: 4px;
+  margin-top: 0.4rem;
+}
+
+.skeleton-excerpt.line2 {
+  width: 75%;
+}
+
+/* Footer — mirrors .post-card-footer */
+.skeleton-card-footer {
+  padding: var(--space-lg);
+  padding-top: 0;
+  margin-top: auto;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.skeleton-reading-time {
+  width: 54px;
+  height: 11px;
+  border-radius: 4px;
+}
+
+.skeleton-arrow {
+  width: 16px;
+  height: 16px;
+  border-radius: 4px;
+}
+
+/* ============================================
+   POST DETAIL PAGE SKELETON
+   ============================================ */
+.skeleton-post-page {
+  max-width: 700px;
+  margin: 0 auto;
+  padding: 120px var(--space-xl) var(--space-2xl);
+  animation: sk-fade-in 0.35s ease both;
+}
+
+.skeleton-post-back {
+  width: 90px;
   height: 14px;
-  margin-bottom: 0.3rem;
+  border-radius: 4px;
+  margin-bottom: 2rem;
 }
 
-.skeleton-excerpt.small {
-  width: 60%;
+.skeleton-post-header {
+  margin-bottom: 3rem;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
 }
 
-.skeleton-footer {
-  margin-top: 1.5rem;
-  width: 40px;
-  height: 12px;
+.skeleton-post-tag {
+  width: 72px;
+  height: 26px;
+  border-radius: 100px;
 }
+
+.skeleton-post-title       { width: 95%; height: 48px; border-radius: 8px; }
+.skeleton-post-title.line2 { width: 70%; height: 48px; border-radius: 8px; }
+
+.skeleton-post-excerpt       { width: 100%; height: 18px; border-radius: 5px; margin-top: 0.5rem; }
+.skeleton-post-excerpt.line2 { width: 80%;  height: 18px; border-radius: 5px; }
+.skeleton-post-excerpt.line3 { width: 55%;  height: 18px; border-radius: 5px; }
+
+.skeleton-post-meta {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  margin-top: 1rem;
+}
+
+.skeleton-post-meta-date { width: 80px;  height: 12px; border-radius: 4px; }
+.skeleton-post-meta-dot  { width: 5px;   height: 5px;  border-radius: 50%; opacity: 0.3; }
+.skeleton-post-meta-time { width: 60px;  height: 12px; border-radius: 4px; }
+
+.skeleton-post-body {
+  display: flex;
+  flex-direction: column;
+  gap: 0.9rem;
+}
+
+.skeleton-post-line        { width: 100%; height: 14px; border-radius: 4px; }
+.skeleton-post-line.w-90   { width: 90%; }
+.skeleton-post-line.w-80   { width: 80%; }
+.skeleton-post-line.w-70   { width: 70%; }
+.skeleton-post-line.w-50   { width: 50%; }
+.skeleton-post-line.gap    { margin-top: 0.6rem; }
+.skeleton-post-line.h2     { height: 22px; border-radius: 5px; width: 55%; margin-top: 1.5rem; }
 
 @media (max-width: 768px) {
   .page-header-title { font-size: 3rem; }
@@ -757,11 +914,12 @@ a {
   background: var(--text-dim);
   border-radius: 50%;
   opacity: 0.3;
+  animation: bounce 1.5s infinite;
 }
 
-.empty-state-decoration span:nth-child(2) {
-  animation: bounce 1.5s infinite 0.2s;
-}
+.empty-state-decoration span:nth-child(1) { animation-delay: 0s; }
+.empty-state-decoration span:nth-child(2) { animation-delay: 0.2s; }
+.empty-state-decoration span:nth-child(3) { animation-delay: 0.4s; }
 
 @keyframes bounce {
   0%, 100% { transform: translateY(0); }

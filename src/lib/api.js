@@ -1,6 +1,6 @@
 // During development, we use Vite proxy (relative /api path) to avoid CORS.
 const isDev = import.meta.env.DEV;
-const API_BASE_URL = isDev ? "" : (import.meta.env.VITE_SERVER_BASE_URL || 'https://vox-diurnabackend.fastapicloud.dev');
+const API_BASE_URL = isDev ? "" : (import.meta.env.VITE_SERVER_BASE_URL || 'https://vox-studio.kc-dev-py.workers.dev/vox/posts');
 const API_URL = `${API_BASE_URL}/api/v1/posts`;
 
 const POSTS_CACHE_KEY = 'vox_diurna_posts_cache';
@@ -16,20 +16,20 @@ function safeParse(json) {
 
 export async function getAllPosts() {
   try {
-    const res = await fetch(API_URL, { 
+    const res = await fetch(API_URL, {
       headers: {
         'Accept': 'application/json',
       },
     });
-    
+
     if (!res.ok) {
       const cached = localStorage.getItem(POSTS_CACHE_KEY);
       return safeParse(cached) ?? [];
     }
-    
+
     const data = await res.json();
     let posts = [];
-    
+
     if (Array.isArray(data)) {
       posts = data;
     } else if (data && typeof data === 'object') {
@@ -39,11 +39,11 @@ export async function getAllPosts() {
         posts = data.posts;
       }
     }
-    
+
     if (posts.length > 0) {
       localStorage.setItem(POSTS_CACHE_KEY, JSON.stringify(posts));
     }
-    
+
     return posts;
   } catch (error) {
     const cached = localStorage.getItem(POSTS_CACHE_KEY);
@@ -59,12 +59,12 @@ export async function getPostDetail(slug, id) {
         'Accept': 'application/json',
       },
     });
-    
+
     if (!res.ok) {
       const cached = localStorage.getItem(specificCacheKey);
       return safeParse(cached);
     }
-    
+
     const data = await res.json();
     if (data) {
       localStorage.setItem(specificCacheKey, JSON.stringify(data));

@@ -4,6 +4,14 @@ import { getAllPosts } from '@/lib/api';
 import LocalizedDate from '@/components/LocalizedDate';
 import EmptyState from '@/components/EmptyState';
 
+const ONE_WEEK_MS = 7 * 24 * 60 * 60 * 1000;
+
+const isPostWithinLastWeek = (dateStr) => {
+  const postDate = new Date(dateStr);
+  if (isNaN(postDate.getTime())) return false;
+  return (new Date() - postDate) <= ONE_WEEK_MS;
+};
+
 const categoryIcons = {
   Architecture: "◈",
   Culture: "◉",
@@ -46,12 +54,23 @@ export default function Home() {
           <div className="posts-grid">
             {[1, 2, 3].map((n) => (
               <div key={n} className="skeleton-card">
-                <div className="skeleton skeleton-category"></div>
-                <div className="skeleton skeleton-title"></div>
-                <div className="skeleton skeleton-excerpt"></div>
-                <div className="skeleton skeleton-excerpt small"></div>
-                <div className="skeleton-footer">
-                  <div className="skeleton" style={{ width: '40px', height: '12px' }}></div>
+                {/* Image / header zone */}
+                <div className="skeleton-card-image">
+                  <div className="skeleton skeleton-icon"></div>
+                  <div className="skeleton skeleton-category"></div>
+                </div>
+                {/* Body zone */}
+                <div className="skeleton-card-body">
+                  <div className="skeleton skeleton-date"></div>
+                  <div className="skeleton skeleton-title"></div>
+                  <div className="skeleton skeleton-title line2"></div>
+                  <div className="skeleton skeleton-excerpt"></div>
+                  <div className="skeleton skeleton-excerpt line2"></div>
+                </div>
+                {/* Footer zone */}
+                <div className="skeleton-card-footer">
+                  <div className="skeleton skeleton-reading-time"></div>
+                  <div className="skeleton skeleton-arrow"></div>
                 </div>
               </div>
             ))}
@@ -75,8 +94,9 @@ export default function Home() {
     );
   }
 
-  const featuredPosts = posts.filter(post => post.featured === true || post.fatured === true);
-  const regularPosts = posts.filter(post => post.featured !== true && post.fatured !== true);
+  const isFeatured = (post) => post.featured === true;
+  const featuredPosts = posts.filter(post => isFeatured(post) && isPostWithinLastWeek(post.date));
+  const regularPosts = posts.filter(post => !isFeatured(post) || !isPostWithinLastWeek(post.date));
 
   return (
     <div className="homepage-wrapper">

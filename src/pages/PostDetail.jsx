@@ -6,6 +6,7 @@ import ReactMarkdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
 import remarkBreaks from 'remark-breaks';
 
+
 export default function PostDetail() {
   const { slug, id } = useParams();
   const navigate = useNavigate();
@@ -73,20 +74,44 @@ export default function PostDetail() {
 
   if (loading) {
     return (
-      <article className="post-page">
-        <div className="skeleton" style={{ width: '150px', height: '20px', marginBottom: '2rem' }}></div>
-        <header className="post-header">
-          <div className="skeleton" style={{ width: '80px', height: '24px', marginBottom: '1rem' }}></div>
-          <div className="skeleton" style={{ width: '100%', height: '50px', marginBottom: '1rem' }}></div>
-          <div className="skeleton" style={{ width: '90%', height: '50px', marginBottom: '1rem' }}></div>
-          <div className="skeleton" style={{ width: '60%', height: '20px', marginTop: '2rem' }}></div>
-        </header>
-      </article>
+      <div className="skeleton-post-page">
+        {/* Back link */}
+        <div className="skeleton skeleton-post-back"></div>
+
+        {/* Header */}
+        <div className="skeleton-post-header">
+          <div className="skeleton skeleton-post-tag"></div>
+          <div className="skeleton skeleton-post-title"></div>
+          <div className="skeleton skeleton-post-title line2"></div>
+          <div className="skeleton skeleton-post-excerpt"></div>
+          <div className="skeleton skeleton-post-excerpt line2"></div>
+          <div className="skeleton skeleton-post-excerpt line3"></div>
+          <div className="skeleton-post-meta">
+            <div className="skeleton skeleton-post-meta-date"></div>
+            <div className="skeleton skeleton-post-meta-dot"></div>
+            <div className="skeleton skeleton-post-meta-time"></div>
+          </div>
+        </div>
+
+        {/* Body content lines */}
+        <div className="skeleton-post-body">
+          <div className="skeleton skeleton-post-line"></div>
+          <div className="skeleton skeleton-post-line w-90"></div>
+          <div className="skeleton skeleton-post-line w-80"></div>
+          <div className="skeleton skeleton-post-line"></div>
+          <div className="skeleton skeleton-post-line w-70"></div>
+          <div className="skeleton skeleton-post-line h2 gap"></div>
+          <div className="skeleton skeleton-post-line gap"></div>
+          <div className="skeleton skeleton-post-line w-90"></div>
+          <div className="skeleton skeleton-post-line w-80"></div>
+          <div className="skeleton skeleton-post-line"></div>
+          <div className="skeleton skeleton-post-line w-50"></div>
+        </div>
+      </div>
     );
   }
 
   if (!post) return null;
-
 
   return (
     <article className="post-page" id="post-article">
