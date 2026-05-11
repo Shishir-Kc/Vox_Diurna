@@ -1,0 +1,187 @@
+/* ============================================
+   SKELETON LIST — Horizontal Row Shimmer
+   ============================================ */
+
+/* List container */
+.skeleton-list-container {
+  display: flex;
+  flex-direction: column;
+  gap: 0.875rem;
+}
+
+/* List item — horizontal card layout */
+.skeleton-list-item {
+  background: var(--bg-surface);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-md);
+  display: flex;
+  gap: 1rem;
+  padding: 1rem;
+  overflow: hidden;
+  animation: sk-list-fade-in 0.5s ease both;
+}
+
+@keyframes sk-list-fade-in {
+  from {
+    opacity: 0;
+    transform: translateY(12px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Image / thumbnail area */
+.skeleton-list-image {
+  width: 80px;
+  height: 80px;
+  flex-shrink: 0;
+  border-radius: var(--radius-sm);
+  background: linear-gradient(135deg, #1c1c1c 0%, #222 100%);
+  position: relative;
+  overflow: hidden;
+}
+
+.skeleton-list-image::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  transform: translateX(-100%);
+  background: linear-gradient(
+    105deg,
+    transparent       0%,
+    rgba(255,255,255,0.00) 30%,
+    rgba(255,255,255,0.055) 48%,
+    rgba(255,255,255,0.09) 50%,
+    rgba(255,255,255,0.055) 52%,
+    rgba(255,255,255,0.00) 70%,
+    transparent       100%
+  );
+  animation: sk-shimmer-list 1.8s ease-in-out infinite;
+}
+
+@keyframes sk-shimmer-list {
+  0%   { transform: translateX(-100%); }
+  100% { transform: translateX(200%); }
+}
+
+/* Content area */
+.skeleton-list-content {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  padding: 0.25rem 0;
+  position: relative;
+  overflow: hidden;
+}
+
+/* Shimmer sweep on entire content area */
+.skeleton-list-content::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  transform: translateX(-100%);
+  background: linear-gradient(
+    105deg,
+    transparent       0%,
+    rgba(255,255,255,0.00) 30%,
+    rgba(255,255,255,0.04)  48%,
+    rgba(255,255,255,0.07) 50%,
+    rgba(255,255,255,0.04) 52%,
+    rgba(255,255,255,0.00) 70%,
+    transparent       100%
+  );
+  animation: sk-shimmer-list 1.8s ease-in-out 0.3s infinite;
+}
+
+/* Meta row */
+.skeleton-list-meta {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.skeleton-list-tag {
+  width: 56px;
+  height: 14px;
+  border-radius: 4px;
+  background: linear-gradient(135deg, #1c1c1c 0%, #222 100%);
+  position: relative;
+  overflow: hidden;
+}
+
+.skeleton-list-tag::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  transform: translateX(-100%);
+  background: linear-gradient(105deg, transparent 0%, rgba(255,255,255,0.06) 50%, transparent 100%);
+  animation: sk-shimmer-list 1.8s ease-in-out 0.1s infinite;
+}
+
+.skeleton-list-date {
+  width: 72px;
+  height: 10px;
+  border-radius: 4px;
+  background: linear-gradient(135deg, #1c1c1c 0%, #222 100%);
+  position: relative;
+  overflow: hidden;
+}
+
+.skeleton-list-date::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  transform: translateX(-100%);
+  background: linear-gradient(105deg, transparent 0%, rgba(255,255,255,0.05) 50%, transparent 100%);
+  animation: sk-shimmer-list 1.8s ease-in-out 0.15s infinite;
+}
+
+/* Title lines */
+.skeleton-list-title {
+  height: 14px;
+  width: 70%;
+  border-radius: 4px;
+  background: linear-gradient(135deg, #1c1c1c 0%, #222 100%);
+  position: relative;
+  overflow: hidden;
+}
+
+.skeleton-list-title::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  transform: translateX(-100%);
+  background: linear-gradient(105deg, transparent 0%, rgba(255,255,255,0.06) 50%, transparent 100%);
+  animation: sk-shimmer-list 1.8s ease-in-out 0.2s infinite;
+}
+
+.skeleton-list-title-sm {
+  width: 45%;
+  animation-delay: 0.05s;
+}
+
+/* Excerpt lines */
+.skeleton-list-excerpt {
+  height: 10px;
+  width: 100%;
+  border-radius: 4px;
+  background: linear-gradient(135deg, #1c1c1c 0%, #222 100%);
+  position: relative;
+  overflow: hidden;
+}
+
+.skeleton-list-excerpt::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  transform: translateX(-100%);
+  background: linear-gradient(105deg, transparent 0%, rgba(255,255,255,0.05) 50%, transparent 100%);
+  animation: sk-shimmer-list 1.8s ease-in-out 0.25s infinite;
+}
+
+.skeleton-list-excerpt-sm {
+  width: 80%;
+}
