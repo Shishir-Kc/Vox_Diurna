@@ -94,9 +94,10 @@ export default function Home() {
     );
   }
 
+  const sortedPosts = [...posts].sort((a, b) => new Date(b.date) - new Date(a.date));
   const isFeatured = (post) => post.featured === true;
-  const featuredPosts = posts.filter(post => isFeatured(post) && isPostWithinLastWeek(post.date));
-  const regularPosts = posts.filter(post => !isFeatured(post) || !isPostWithinLastWeek(post.date));
+  const featuredPosts = sortedPosts.filter(post => isFeatured(post) && isPostWithinLastWeek(post.date));
+  const regularPosts = sortedPosts.filter(post => !isFeatured(post) || !isPostWithinLastWeek(post.date));
 
   return (
     <div className="homepage-wrapper">
