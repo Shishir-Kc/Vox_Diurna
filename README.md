@@ -10,7 +10,6 @@ Live: [https://vox-diurna.pages.dev](https://vox-diurna.pages.dev)
 - **Vite** — build tool and dev server
 - **React Router v6** — client-side routing
 - **react-markdown** + **remark-gfm** — rendering markdown content in posts
-- **boneyard-js** — utility library
 - **Cloudflare Pages** — frontend deployment
 - **Cloudflare Workers** — backend API
 
