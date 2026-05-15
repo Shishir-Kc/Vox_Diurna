@@ -4,7 +4,6 @@ import Home from '@/pages/Home';
 import PostDetail from '@/pages/PostDetail';
 import NotFound from '@/pages/NotFound';
 import About from '@/pages/About';
-import SkeletonDemo from '@/pages/SkeletonDemo';
 
 export default function App() {
   return (
@@ -17,7 +16,6 @@ export default function App() {
         <ul className="navbar-links">
           <li><Link to="/">Home</Link></li>
           <li><Link to="/about">About</Link></li>
-          <li><Link to="/skeleton-demo">Skeleton</Link></li>
         </ul>
       </nav>
 
@@ -25,7 +23,6 @@ export default function App() {
         <Routes>
           <Route path="/" element={<Home />} />
           <Route path="/about" element={<About />} />
-          <Route path="/skeleton-demo" element={<SkeletonDemo />} />
           <Route path="/blog/:slug/:id" element={<PostDetail />} />
           <Route path="*" element={<NotFound />} />
         </Routes>
@@ -38,12 +35,12 @@ export default function App() {
             <Link to="/about" className="footer-text">About</Link>
             <span className="footer-text">© 2026 — Words that matter, daily.</span>
           </div>
-          
+
           <div className="footer-credits">
             <span>Made by</span>
-            <a 
-              href="https://github.com/Shishir-Kc" 
-              target="_blank" 
+            <a
+              href="https://github.com/Shishir-Kc"
+              target="_blank"
               rel="noopener noreferrer"
               className="footer-github-link"
             >
