@@ -11,11 +11,6 @@ export default defineConfig({
     },
   },
   server: {
-    proxy: {
-      '/api': {
-        target: 'https://vox-diurnabackend.fastapicloud.dev',
-        changeOrigin: true,
-      },
-    },
+    port: 8787,
   },
 })
