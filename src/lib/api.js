@@ -1,7 +1,7 @@
 // During development, we use Vite proxy (relative /api path) to avoid CORS.
 const isDev = import.meta.env.DEV;
-const API_BASE_URL = isDev ? "" : (import.meta.env.VITE_SERVER_BASE_URL || 'https://vox-studio.kc-dev-py.workers.dev');
-const API_URL = `${API_BASE_URL}/vox/posts`;
+const API_BASE_URL = isDev ? 'http://127.0.0.1:8000' : (import.meta.env.VITE_SERVER_BASE_URL || 'https://vox-diurnabackend.fastapicloud.dev/');
+const API_URL = `${API_BASE_URL}/api/v1/posts`;
 
 const POSTS_CACHE_KEY = 'vox_diurna_posts_cache';
 const DETAIL_CACHE_KEY_PREFIX = 'vox_diurna_post_';
