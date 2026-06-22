@@ -23,7 +23,7 @@
   --space-lg: 1.5rem;
   --space-xl: 2rem;
   --space-2xl: 3rem;
-  --radius-md: 12px;
+  --radius-md: 28px;
 }
 
 *, *::before, *::after {
@@ -112,6 +112,201 @@ a {
   max-width: 500px;
 }
 
+/* ============================================
+   POST CONTROLS — search + category filter
+   ============================================ */
+.post-controls {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: var(--space-lg) var(--space-xl) 0;
+  display: flex;
+  gap: var(--space-md);
+  align-items: center;
+  flex-wrap: wrap;
+}
+
+.post-controls-search {
+  position: relative;
+  flex: 1 1 280px;
+  max-width: 420px;
+  display: flex;
+  align-items: center;
+}
+
+.post-controls-search-icon {
+  position: absolute;
+  left: 0.9rem;
+  color: var(--text-dim);
+  pointer-events: none;
+}
+
+.post-controls-input {
+  width: 100%;
+  font-family: var(--font-main);
+  font-size: 0.95rem;
+  color: var(--text-main);
+  background: var(--bg-surface);
+  border: 1px solid var(--border-subtle);
+  border-radius: 100px;
+  padding: 0.7rem 1.1rem 0.7rem 2.5rem;
+  outline: none;
+  transition: border-color 0.2s ease, background 0.2s ease;
+}
+
+.post-controls-input::placeholder {
+  color: var(--text-dim);
+}
+
+.post-controls-input:focus {
+  border-color: var(--text-dim);
+  background: var(--bg-card);
+}
+
+/* Hide native search clear (X) button — we provide our own Clear filters */
+.post-controls-input::-webkit-search-cancel-button {
+  -webkit-appearance: none;
+  appearance: none;
+}
+
+.post-controls-clear {
+  margin-left: auto;
+  font-family: var(--font-main);
+  font-size: 0.8rem;
+  color: var(--text-muted);
+  background: transparent;
+  border: 1px solid var(--border-subtle);
+  border-radius: 100px;
+  padding: 0.4rem 0.9rem;
+  cursor: pointer;
+  transition: color 0.2s ease, border-color 0.2s ease;
+}
+
+.post-controls-clear:hover {
+  color: var(--text-bright);
+  border-color: var(--text-dim);
+}
+
+@media (max-width: 640px) {
+  .navbar { padding: 0.25rem 0.5rem; } /* Compact navbar */
+  .page-header { padding: 0.5rem 0.5rem 0; } /* Remove header padding */
+  .page-header-title { font-size: 1.75rem; }
+  .page-header-subtitle { display: none; } /* Hide subtitle to save space */
+  .post-controls { flex-direction: column; align-items: stretch; gap: 0.1rem; padding: 0.25rem 0.5rem; }
+  .post-controls-search { display: none; } /* Remove search bar */
+  .post-controls-clear { margin-left: 0; align-self: flex-start; }
+  .featured-header { margin-bottom: 0.1rem; padding-bottom: 0.1rem; }
+  .posts-grid { gap: 0.25rem; grid-template-columns: 1fr; } /* Minimal gap */
+  .custom-select { width: 100%; }
+  .custom-select-trigger { width: 100%; }
+}
+
+/* ============================================
+   CUSTOM SELECT DROPDOWN — smooth rounded
+   ============================================ */
+.custom-select {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  font-family: var(--font-main);
+}
+
+.custom-select-trigger {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  appearance: none;
+  font-family: inherit;
+  font-size: 0.9rem;
+  color: var(--text-main);
+  background: var(--bg-surface);
+  border: 1px solid var(--border-subtle);
+  border-radius: 100px;
+  padding: 0.7rem 2.2rem 0.7rem 1.1rem;
+  cursor: pointer;
+  outline: none;
+  transition: border-color 0.2s ease, background 0.2s ease, box-shadow 0.2s ease;
+  min-width: 130px;
+}
+
+.custom-select-trigger:hover,
+.custom-select-trigger.open,
+.custom-select-trigger:focus-visible {
+  border-color: var(--text-dim);
+  background: var(--bg-card);
+  box-shadow: 0 0 0 2px rgba(255, 255, 255, 0.05);
+}
+
+.custom-select-value {
+  line-height: 1;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.custom-select-chevron {
+  position: absolute;
+  right: 0.85rem;
+  color: var(--text-dim);
+  pointer-events: none;
+  transition: transform 0.2s ease;
+}
+
+.custom-select-trigger.open .custom-select-chevron {
+  transform: rotate(180deg);
+}
+
+.custom-select-options {
+  position: absolute;
+  top: calc(100% + 0.5rem);
+  left: 0;
+  right: 0;
+  margin: 0;
+  padding: 0.4rem;
+  list-style: none;
+  background: var(--bg-card);
+  border: 1px solid var(--border-subtle);
+  border-radius: 16px;
+  box-shadow: 0 12px 32px rgba(0, 0, 0, 0.4);
+  z-index: 100;
+  overflow: hidden;
+  min-width: 150px;
+  animation: select-fade-in 0.18s ease-out both;
+}
+
+@keyframes select-fade-in {
+  from { opacity: 0; transform: translateY(-6px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.custom-select-option {
+  padding: 0.55rem 0.75rem;
+  font-size: 0.9rem;
+  color: var(--text-main);
+  border-radius: 10px;
+  cursor: pointer;
+  transition: background 0.15s ease, color 0.15s ease;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  outline: none;
+}
+
+.custom-select-option:hover,
+.custom-select-option.highlighted {
+  background: rgba(255, 255, 255, 0.08);
+  color: var(--text-bright);
+}
+
+.custom-select-option.selected {
+  color: var(--text-bright);
+  background: rgba(255, 255, 255, 0.12);
+}
+
+@media (max-width: 640px) {
+  .custom-select { width: 100%; }
+  .custom-select-trigger { width: 100%; }
+}
+
 .section {
   padding: var(--space-lg) var(--space-xl);
   max-width: 1200px;
@@ -133,6 +328,7 @@ a {
   cursor: pointer;
   display: flex;
   flex-direction: column;
+  overflow: hidden;
 }
 
 .post-card:hover {
