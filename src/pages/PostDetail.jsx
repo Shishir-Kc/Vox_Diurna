@@ -1,7 +1,8 @@
 import React, { useEffect, useState } from 'react';
-import { Link, useParams, useNavigate } from 'react-router-dom';
+import { Link, useParams } from 'react-router-dom';
 import { getPostDetail } from '@/lib/api';
 import LocalizedDate from '@/components/LocalizedDate';
+import NotFound from '@/pages/NotFound';
 import ReactMarkdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
 import remarkBreaks from 'remark-breaks';
@@ -9,16 +10,16 @@ import remarkBreaks from 'remark-breaks';
 
 export default function PostDetail() {
   const { slug, id } = useParams();
-  const navigate = useNavigate();
   const [post, setPost] = useState(null);
   const [loading, setLoading] = useState(true);
+  const [notFound, setNotFound] = useState(false);
 
   useEffect(() => {
     async function loadPost() {
       try {
         const data = await getPostDetail(slug, id);
         if (!data) {
-          navigate('/not-found');
+          setNotFound(true);
           return;
         }
         setPost(data);
@@ -70,7 +71,7 @@ export default function PostDetail() {
       }
     }
     loadPost();
-  }, [slug, id, navigate]);
+  }, [slug, id]);
 
   if (loading) {
     return (
@@ -109,6 +110,10 @@ export default function PostDetail() {
         </div>
       </div>
     );
+  }
+
+  if (notFound || (!loading && !post)) {
+    return <NotFound />;
   }
 
   if (!post) return null;
