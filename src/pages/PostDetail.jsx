@@ -6,6 +6,8 @@ import NotFound from '@/pages/NotFound';
 import ReactMarkdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
 import remarkBreaks from 'remark-breaks';
+import rehypeSlug from 'rehype-slug';
+import rehypeAutolinkHeadings from 'rehype-autolink-headings';
 
 
 export default function PostDetail() {
@@ -73,6 +75,24 @@ export default function PostDetail() {
     loadPost();
   }, [slug, id]);
 
+  useEffect(() => {
+    const hash = window.location.hash;
+    if (hash) {
+      const el = document.querySelector(hash);
+      if (el) el.scrollIntoView({ behavior: 'smooth' });
+    }
+
+    const onHashChange = () => {
+      const newHash = window.location.hash;
+      if (newHash) {
+        const el = document.querySelector(newHash);
+        if (el) el.scrollIntoView({ behavior: 'smooth' });
+      }
+    };
+    window.addEventListener('hashchange', onHashChange);
+    return () => window.removeEventListener('hashchange', onHashChange);
+  }, [post]);
+
   if (loading) {
     return (
       <div className="skeleton-post-page">
@@ -137,7 +157,10 @@ export default function PostDetail() {
       </header>
 
       <div className="post-body">
-        <ReactMarkdown remarkPlugins={[remarkGfm, remarkBreaks]}>
+        <ReactMarkdown
+          remarkPlugins={[remarkGfm, remarkBreaks]}
+          rehypePlugins={[rehypeSlug, rehypeAutolinkHeadings]}
+        >
           {post.content || ""}
         </ReactMarkdown>
       </div>
