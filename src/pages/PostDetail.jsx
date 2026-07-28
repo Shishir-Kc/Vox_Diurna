@@ -148,7 +148,9 @@ export default function PostDetail() {
       <header className="post-header">
         <span className="post-category-tag">{post.category}</span>
         <h1 className="post-page-title">{post.title}</h1>
-        <p className="post-page-excerpt">{post.excerpt}</p>
+        <ReactMarkdown className="post-page-excerpt" remarkPlugins={[remarkGfm, remarkBreaks]}>
+            {post.excerpt}
+          </ReactMarkdown>
         <div className="post-page-meta">
           <LocalizedDate dateStr={post.date} />
           <span className="divider"></span>
