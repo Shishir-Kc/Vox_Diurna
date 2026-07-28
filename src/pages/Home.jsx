@@ -4,6 +4,8 @@ import { getAllPosts } from '@/lib/api';
 import LocalizedDate from '@/components/LocalizedDate';
 import EmptyState from '@/components/EmptyState';
 import Select from '@/components/Select';
+import ReactMarkdown from 'react-markdown';
+import remarkGfm from 'remark-gfm';
 
 const ONE_WEEK_MS = 7 * 24 * 60 * 60 * 1000;
 
@@ -87,7 +89,9 @@ export default function Home() {
           <LocalizedDate dateStr={post.date} />
         </span>
         <h3 className="post-card-title">{post.title}</h3>
-        <p className="post-card-excerpt">{post.excerpt}</p>
+        <ReactMarkdown className="post-card-excerpt" remarkPlugins={[remarkGfm]}>
+          {post.excerpt}
+        </ReactMarkdown>
       </div>
       <div className="post-card-footer">
         <span className="post-card-reading-time">
@@ -242,7 +246,9 @@ export default function Home() {
                         <LocalizedDate dateStr={post.date} />
                       </span>
                       <h3 className="post-card-title">{post.title}</h3>
-                      <p className="post-card-excerpt">{post.excerpt}</p>
+                      <ReactMarkdown className="post-card-excerpt" remarkPlugins={[remarkGfm]}>
+                        {post.excerpt}
+                      </ReactMarkdown>
                     </div>
                     <div className="post-card-footer">
                       <span className="post-card-reading-time">
@@ -282,7 +288,9 @@ export default function Home() {
                       <LocalizedDate dateStr={post.date} />
                     </span>
                     <h3 className="post-card-title">{post.title}</h3>
-                    <p className="post-card-excerpt">{post.excerpt}</p>
+                    <ReactMarkdown className="post-card-excerpt" remarkPlugins={[remarkGfm]}>
+                      {post.excerpt}
+                    </ReactMarkdown>
                   </div>
                   <div className="post-card-footer">
                     <span className="post-card-reading-time">
