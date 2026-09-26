@@ -3,42 +3,61 @@ import { Link } from 'react-router-dom';
 import { getAllPosts } from '@/lib/api';
 import LocalizedDate from '@/components/LocalizedDate';
 import EmptyState from '@/components/EmptyState';
-import Select from '@/components/Select';
-import ReactMarkdown from 'react-markdown';
-import remarkGfm from 'remark-gfm';
 
 const ONE_WEEK_MS = 7 * 24 * 60 * 60 * 1000;
 
 const isPostWithinLastWeek = (dateStr) => {
   const postDate = new Date(dateStr);
-  if (isNaN(postDate.getTime())) return false;
-  return (new Date() - postDate) <= ONE_WEEK_MS;
+  return !Number.isNaN(postDate.getTime()) && new Date() - postDate <= ONE_WEEK_MS;
 };
 
-const categoryIcons = {
-  Architecture: "◈",
-  Culture: "◉",
-  Science: "◎",
-  Design: "◇",
-  Music: "♪",
-  Technology: "⬡",
-  Art: "△",
-};
+function cleanExcerpt(value) {
+  if (typeof value !== 'string') return '';
+  return value
+    .replace(/!\[([^\]]*)\]\([^)]+\)/g, '$1')
+    .replace(/\[([^\]]+)\]\([^)]+\)/g, '$1')
+    .replace(/^\s*#{1,6}\s*/gm, '')
+    .replace(/^\s*>\s?/gm, '')
+    .replace(/[*_~`]/g, '')
+    .replace(/\s+/g, ' ')
+    .trim();
+}
+
+function displayTitle(value) {
+  if (typeof value !== 'string') return '';
+  return value.replaceAll('_', ' ').replace(/\s+/g, ' ').trim();
+}
+
+function PostExcerpt({ children, className = '' }) {
+  const excerpt = cleanExcerpt(children);
+  if (!excerpt) return null;
+  return <p className={className}>{excerpt}</p>;
+}
+
+function PostMeta({ post }) {
+  return (
+    <div className="story-meta">
+      {post.category && <span className="story-category">{post.category}</span>}
+      {post.date && <LocalizedDate dateStr={post.date} />}
+      {post.readingTime && <span>{post.readingTime}</span>}
+    </div>
+  );
+}
 
 export default function Home() {
   const [posts, setPosts] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [query, setQuery] = useState('');
-  const [category, setCategory] = useState('All');
+  const [loadFailed, setLoadFailed] = useState(false);
 
   useEffect(() => {
     async function loadPosts() {
       try {
         const data = await getAllPosts();
         setPosts(data || []);
-        document.title = "Vox Diurna — Words that matter, daily.";
+        document.title = 'Blog';
       } catch (error) {
         console.error('Failed to load posts:', error);
+        setLoadFailed(true);
       } finally {
         setLoading(false);
       }
@@ -46,264 +65,116 @@ export default function Home() {
     loadPosts();
   }, []);
 
-  const categories = useMemo(() => {
-    const set = new Set(posts.map(p => p.category).filter(Boolean));
-    return ['All', ...Array.from(set).sort()];
-  }, [posts]);
-
-  const isFiltering = query.trim().length > 0 || category !== 'All';
-
-  const filteredPosts = useMemo(() => {
-    const q = query.trim().toLowerCase();
-    return [...posts]
-      .sort((a, b) => new Date(b.date) - new Date(a.date))
-      .filter(post => {
-        if (category !== 'All' && post.category !== category) return false;
-        if (!q) return true;
-        const haystack = [
-          post.title,
-          post.excerpt,
-          post.category,
-          post.content,
-        ].filter(Boolean).join(' ').toLowerCase();
-        return haystack.includes(q);
-      });
-  }, [posts, query, category]);
-
-  const renderPostCard = (post, index, offset = 0) => (
-    <Link
-      key={post.slug}
-      to={`/blog/${post.slug}/${post.id}`}
-      className="post-card animate-reveal"
-      id={`post-${post.slug}`}
-      style={{ animationDelay: `${(offset + index) * 0.1}s` }}
-    >
-      <div className="post-card-image">
-        {post.image ? <img className="post-card-cover" src={post.image} alt={`${post.title} cover`} loading="lazy" /> : (
-          <span className="placeholder-icon">{categoryIcons[post.category] || "◈"}</span>
-        )}
-        <span className="post-card-category">{post.category}</span>
-      </div>
-      <div className="post-card-body">
-        <span className="post-card-date">
-          <LocalizedDate dateStr={post.date} />
-        </span>
-        <h3 className="post-card-title">{post.title}</h3>
-        <ReactMarkdown className="post-card-excerpt" remarkPlugins={[remarkGfm]}>
-          {post.excerpt}
-        </ReactMarkdown>
-      </div>
-      <div className="post-card-footer">
-        <span className="post-card-reading-time">
-          {post.readingTime}
-        </span>
-        <span className="post-card-arrow">→</span>
-      </div>
-    </Link>
+  const visiblePosts = useMemo(
+    () => posts.filter((post) => post.category?.trim().toLowerCase() !== 'draft'),
+    [posts],
+  );
+  const sortedPosts = useMemo(
+    () => [...visiblePosts].sort((a, b) => new Date(b.date) - new Date(a.date)),
+    [visiblePosts],
   );
 
-  const renderControls = () => (
-    <section className="post-controls" aria-label="Filter posts">
-      <div className="post-controls-search">
-        <svg className="post-controls-search-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
-          <circle cx="11" cy="11" r="8" />
-          <line x1="21" y1="21" x2="16.65" y2="16.65" />
-        </svg>
-        <input
-          type="search"
-          className="post-controls-input"
-          placeholder="Search posts…"
-          value={query}
-          onChange={(e) => setQuery(e.target.value)}
-          aria-label="Search posts"
-        />
-      </div>
-      <Select
-        value={category}
-        onChange={setCategory}
-        options={categories}
-        label="Filter by category"
-      />
-    </section>
+  const recentFeatured = sortedPosts.find(
+    (post) => post.featured === true && isPostWithinLastWeek(post.date),
+  );
+  const leadPost = recentFeatured || sortedPosts[0];
+  const storyPosts = sortedPosts.filter((post) => post !== leadPost);
+
+  const renderStories = (items) => (
+    <div className="stories-grid">
+      {items.map((post) => (
+        <Link
+          key={post.id || post.slug}
+          to={`/blog/${post.slug}/${post.id}`}
+          className="story-card"
+          id={`post-${post.slug}`}
+        >
+          <PostMeta post={post} />
+          <h3 className="story-title">{displayTitle(post.title)}</h3>
+          <PostExcerpt className="story-excerpt">{post.excerpt}</PostExcerpt>
+          <span className="story-read-link" aria-hidden="true">Continue reading</span>
+        </Link>
+      ))}
+    </div>
   );
 
   if (loading) {
     return (
       <div className="homepage-wrapper">
-        <header className="page-header">
-          <h1 className="page-header-title">
-            Vox <span className="accent">Diurna</span>
-          </h1>
-          <p className="page-header-subtitle">Daily Voice — A collection of curated thoughts.</p>
-        </header>
-        <section className="section">
-          <div className="posts-grid">
-            {[1, 2, 3].map((n) => (
-              <div key={n} className="skeleton-card">
-                {/* Image / header zone */}
-                <div className="skeleton-card-image">
-                  <div className="skeleton skeleton-icon"></div>
-                  <div className="skeleton skeleton-category"></div>
-                </div>
-                {/* Body zone */}
-                <div className="skeleton-card-body">
-                  <div className="skeleton skeleton-date"></div>
-                  <div className="skeleton skeleton-title"></div>
-                  <div className="skeleton skeleton-title line2"></div>
-                  <div className="skeleton skeleton-excerpt"></div>
-                  <div className="skeleton skeleton-excerpt line2"></div>
-                </div>
-                {/* Footer zone */}
-                <div className="skeleton-card-footer">
-                  <div className="skeleton skeleton-reading-time"></div>
-                  <div className="skeleton skeleton-arrow"></div>
-                </div>
-              </div>
-            ))}
+        <section className="lead-skeleton" aria-label="Loading stories">
+          <div className="skeleton lead-skeleton-image" />
+          <div className="lead-skeleton-copy">
+            <div className="skeleton skeleton-line short" />
+            <div className="skeleton skeleton-line title" />
+            <div className="skeleton skeleton-line title second" />
+            <div className="skeleton skeleton-line" />
+            <div className="skeleton skeleton-line medium" />
           </div>
         </section>
+        <div className="stories-grid" aria-hidden="true">
+          {[1, 2, 3, 4].map((item) => <div className="story-skeleton" key={item} />)}
+        </div>
       </div>
     );
   }
 
-  if (!posts || posts.length === 0) {
+  if (!visiblePosts.length) {
     return (
       <div className="homepage-wrapper">
-        <header className="page-header">
-          <h1 className="page-header-title">
-            Vox <span className="accent">Diurna</span>
-          </h1>
-          <p className="page-header-subtitle">Daily Voice — A collection of curated thoughts.</p>
-        </header>
-        <EmptyState />
+        <EmptyState
+          title={loadFailed ? 'The journal could not load' : 'No published stories yet'}
+          description={loadFailed ? 'Refresh the page in a moment to try again.' : 'New writing will appear here when it is published.'}
+          headingLevel="h1"
+        />
       </div>
     );
   }
-
-  const sortedPosts = [...posts].sort((a, b) => new Date(b.date) - new Date(a.date));
-  const isFeatured = (post) => post.featured === true;
-  const featuredPosts = sortedPosts.filter(post => isFeatured(post) && isPostWithinLastWeek(post.date));
-  const regularPosts = sortedPosts.filter(post => !isFeatured(post) || !isPostWithinLastWeek(post.date));
 
   return (
     <div className="homepage-wrapper">
-      <header className="page-header">
-        <h1 className="page-header-title">
-          Vox <span className="accent">Diurna</span>
-        </h1>
-        <p className="page-header-subtitle">Daily Voice — A collection of curated thoughts.</p>
-      </header>
-
-      {renderControls()}
-
-      {isFiltering ? (
-        <section className="section" id="posts-section">
-          <div className="featured-header">
-            <h2>{filteredPosts.length} {filteredPosts.length === 1 ? 'Result' : 'Results'}</h2>
-            {(query.trim() || category !== 'All') && (
-              <button
-                type="button"
-                className="post-controls-clear"
-                onClick={() => { setQuery(''); setCategory('All'); }}
+      {leadPost && (
+        <section className="lead-story" aria-label="Featured story">
+          <Link
+            className="lead-image"
+            to={`/blog/${leadPost.slug}/${leadPost.id}`}
+            aria-label={`Read ${displayTitle(leadPost.title)}`}
+          >
+            {leadPost.image ? (
+              <img src={leadPost.image} alt="" fetchPriority="high" />
+            ) : (
+              <span className="lead-cover" aria-hidden="true">
+                <span className="lead-cover-initial">{displayTitle(leadPost.title).charAt(0)}</span>
+              </span>
+            )}
+          </Link>
+          <div className="lead-copy">
+            <PostMeta post={leadPost} />
+            <h1 className="lead-title">
+              <Link
+                className="lead-title-link"
+                to={`/blog/${leadPost.slug}/${leadPost.id}`}
+                aria-label={`Continue reading ${displayTitle(leadPost.title)}`}
               >
-                Clear filters
-              </button>
-            )}
+                {displayTitle(leadPost.title)}
+              </Link>
+            </h1>
+            <PostExcerpt className="lead-excerpt">{leadPost.excerpt}</PostExcerpt>
+            <Link className="lead-read-link" to={`/blog/${leadPost.slug}/${leadPost.id}`}>
+              Continue reading
+            </Link>
           </div>
-          {filteredPosts.length === 0 ? (
-            <EmptyState />
-          ) : (
-            <div className="posts-grid">
-              {filteredPosts.map((post, index) => renderPostCard(post, index))}
-            </div>
-          )}
         </section>
-      ) : (
-        <>
-          {featuredPosts.length > 0 && (
-            <section className="featured-section animate-reveal">
-              <div className="featured-header">
-                <span className="featured-badge">Featured</span>
-                <h2>Top Posts</h2>
-              </div>
-              <div className="posts-grid">
-                {featuredPosts.map((post, index) => (
-                  <Link
-                    key={post.slug}
-                    to={`/blog/${post.slug}/${post.id}`}
-                    className="post-card animate-reveal"
-                    id={`post-featured-${post.slug}`}
-                    style={{ animationDelay: `${index * 0.1}s` }}
-                  >
-                    <div className="post-card-image">
-                      {post.image ? <img className="post-card-cover" src={post.image} alt={`${post.title} cover`} loading="lazy" /> : (
-                        <span className="placeholder-icon">{categoryIcons[post.category] || "◈"}</span>
-                      )}
-                      <span className="post-card-category">{post.category}</span>
-                    </div>
-                    <div className="post-card-body">
-                      <span className="post-card-date">
-                        <LocalizedDate dateStr={post.date} />
-                      </span>
-                      <h3 className="post-card-title">{post.title}</h3>
-                      <ReactMarkdown className="post-card-excerpt" remarkPlugins={[remarkGfm]}>
-                        {post.excerpt}
-                      </ReactMarkdown>
-                    </div>
-                    <div className="post-card-footer">
-                      <span className="post-card-reading-time">
-                        {post.readingTime}
-                      </span>
-                      <span className="post-card-arrow">→</span>
-                    </div>
-                  </Link>
-                ))}
-              </div>
-            </section>
-          )}
-
-          <section className="section" id="posts-section">
-            {featuredPosts.length > 0 && (
-              <div className="featured-header">
-                <h2>Recent Posts</h2>
-              </div>
-            )}
-            <div className="posts-grid">
-              {regularPosts.map((post, index) => (
-                <Link
-                  key={post.slug}
-                  to={`/blog/${post.slug}/${post.id}`}
-                  className="post-card animate-reveal"
-                  id={`post-${post.slug}`}
-                  style={{ animationDelay: `${(featuredPosts.length + index) * 0.1}s` }}
-                >
-                  <div className="post-card-image">
-                    {post.image ? <img className="post-card-cover" src={post.image} alt={`${post.title} cover`} loading="lazy" /> : (
-                      <span className="placeholder-icon">{categoryIcons[post.category] || "◈"}</span>
-                    )}
-                    <span className="post-card-category">{post.category}</span>
-                  </div>
-                  <div className="post-card-body">
-                    <span className="post-card-date">
-                      <LocalizedDate dateStr={post.date} />
-                    </span>
-                    <h3 className="post-card-title">{post.title}</h3>
-                    <ReactMarkdown className="post-card-excerpt" remarkPlugins={[remarkGfm]}>
-                      {post.excerpt}
-                    </ReactMarkdown>
-                  </div>
-                  <div className="post-card-footer">
-                    <span className="post-card-reading-time">
-                      {post.readingTime}
-                    </span>
-                    <span className="post-card-arrow">→</span>
-                  </div>
-                </Link>
-              ))}
-            </div>
-          </section>
-        </>
       )}
+
+      <section className="stories-section" id="posts-section">
+        <div className="stories-heading">
+          <h2>Recents</h2>
+        </div>
+
+        {storyPosts.length ? renderStories(storyPosts) : (
+          <p className="no-more-stories">There are no more stories here yet.</p>
+        )}
+      </section>
     </div>
   );
 }
