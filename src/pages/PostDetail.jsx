@@ -3,12 +3,16 @@ import { Link, useParams } from 'react-router-dom';
 import { getPostDetail } from '@/lib/api';
 import LocalizedDate from '@/components/LocalizedDate';
 import NotFound from '@/pages/NotFound';
+import ScrollExpand from '@/components/ScrollExpand';
 import ReactMarkdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
 import remarkBreaks from 'remark-breaks';
 import rehypeSlug from 'rehype-slug';
 import rehypeAutolinkHeadings from 'rehype-autolink-headings';
 
+const displayTitle = (value) => typeof value === 'string'
+  ? value.replaceAll('_', ' ').replace(/\s+/g, ' ').trim()
+  : '';
 
 export default function PostDetail() {
   const { slug, id } = useParams();
@@ -24,18 +28,19 @@ export default function PostDetail() {
           setNotFound(true);
           return;
         }
+        const title = displayTitle(data.title);
         setPost(data);
-        document.title = `${data.title} — Vox Diurna`;
+        document.title = `${title} — Blog`;
         
         const metaDesc = document.querySelector('meta[name="description"]');
         if (metaDesc) {
-          metaDesc.setAttribute('content', data.excerpt || `Read ${data.title} on Vox Diurna by Shishir Khatri, Nepali entrepreneur and backend developer.`);
+          metaDesc.setAttribute('content', data.excerpt || `Read ${title} on Blog by Shishir Khatri, Nepali entrepreneur and backend developer.`);
         }
         
-        document.querySelector('meta[property="og:title"]')?.setAttribute('content', `${data.title} — Vox Diurna`);
+        document.querySelector('meta[property="og:title"]')?.setAttribute('content', `${title} — Blog`);
         const ogDesc = document.querySelector('meta[property="og:description"]');
         if (ogDesc) {
-          ogDesc.setAttribute('content', data.excerpt || `Read ${data.title} on Vox Diurna`);
+          ogDesc.setAttribute('content', data.excerpt || `Read ${title} on Blog`);
         }
         if (data.image) document.querySelector('meta[property="og:image"]')?.setAttribute('content', data.image);
         document.querySelector('meta[property="og:url"]')?.setAttribute('content', `https://blog.shishirkhatri.com.np/blog/${slug}/${id}`);
@@ -43,7 +48,7 @@ export default function PostDetail() {
         const schema = {
           "@context": "https://schema.org",
           "@type": "BlogPosting",
-          "headline": data.title,
+          "headline": title,
           "description": data.excerpt,
           ...(data.image ? { "image": data.image } : {}),
           "author": {
@@ -142,24 +147,39 @@ export default function PostDetail() {
 
   return (
     <article className="post-page" id="post-article">
-      <Link to="/" className="post-back">
-        <span className="arrow">←</span>
-        <span>Back Home</span>
-      </Link>
+      <div className={`post-hero-section${post.image ? ' post-hero-section--expand' : ''}`}>
+        <Link to="/" className="post-back">
+          <span className="arrow">←</span>
+          <span>Back Home</span>
+        </Link>
 
-      <header className="post-header">
-        {post.image && <img className="post-cover-image" src={post.image} alt={`${post.title} cover`} />}
-        <span className="post-category-tag">{post.category}</span>
-        <h1 className="post-page-title">{post.title}</h1>
-        <ReactMarkdown className="post-page-excerpt" remarkPlugins={[remarkGfm, remarkBreaks]}>
-            {post.excerpt}
-          </ReactMarkdown>
-        <div className="post-page-meta">
-          <LocalizedDate dateStr={post.date} />
-          <span className="divider"></span>
-          <span>{post.readingTime}</span>
-        </div>
-      </header>
+        <header className="post-header">
+          {post.image && (
+            <ScrollExpand
+              className="post-cover-expand"
+              src={post.image}
+              alt={`${displayTitle(post.title)} cover`}
+              title={displayTitle(post.title)}
+              scrollHint="Scroll to expand"
+              startWidth={56}
+              startHeight={80}
+              useWindowScroll
+            />
+          )}
+          <span className="post-category-tag">{post.category}</span>
+          <h1 className="post-page-title">{displayTitle(post.title)}</h1>
+          <div className="post-page-excerpt">
+            <ReactMarkdown remarkPlugins={[remarkGfm, remarkBreaks]}>
+              {post.excerpt}
+            </ReactMarkdown>
+          </div>
+          <div className="post-page-meta">
+            <LocalizedDate dateStr={post.date} />
+            <span className="divider"></span>
+            <span>{post.readingTime}</span>
+          </div>
+        </header>
+      </div>
 
       <div className="post-body">
         <ReactMarkdown
