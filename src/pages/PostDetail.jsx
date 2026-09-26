@@ -16,9 +16,19 @@ const displayTitle = (value) => typeof value === 'string'
 
 export default function PostDetail() {
   const { slug, id } = useParams();
+  const [compactViewport, setCompactViewport] = useState(() => (
+    window.matchMedia('(max-width: 680px)').matches
+  ));
   const [post, setPost] = useState(null);
   const [loading, setLoading] = useState(true);
   const [notFound, setNotFound] = useState(false);
+
+  useEffect(() => {
+    const mediaQuery = window.matchMedia('(max-width: 680px)');
+    const updateViewport = () => setCompactViewport(mediaQuery.matches);
+    mediaQuery.addEventListener('change', updateViewport);
+    return () => mediaQuery.removeEventListener('change', updateViewport);
+  }, []);
 
   useEffect(() => {
     async function loadPost() {
@@ -161,8 +171,8 @@ export default function PostDetail() {
               alt={`${displayTitle(post.title)} cover`}
               title={displayTitle(post.title)}
               scrollHint="Scroll to expand"
-              startWidth={56}
-              startHeight={80}
+              startWidth={compactViewport ? 86 : 56}
+              startHeight={compactViewport ? 55 : 80}
               useWindowScroll
             />
           )}
