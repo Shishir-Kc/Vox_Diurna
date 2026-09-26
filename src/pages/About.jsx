@@ -75,7 +75,7 @@ export default function About() {
         <h2>My Journey</h2>
         <p>
           I started my coding journey in 2022 as self-taught. Since then, I've 
-          built multiple projects including Vox_Diurna (this blog platform), 
+          built multiple projects including this blog platform, 
           Hyper.backend (internal tools), Aris (an experimental OS), and 
           Extractro (OCR utilities). Each project has taught me something 
           valuable about building for the Nepali context.
