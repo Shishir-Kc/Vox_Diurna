@@ -7,6 +7,7 @@ import NotFound from '@/pages/NotFound';
 import About from '@/pages/About';
 import SmoothCursor from '@/components/SmoothCursor';
 import ClickSpark from '@/components/ClickSpark';
+import MusicToggleButton from '@/components/MusicToggleButton';
 
 function getInitialTheme() {
   try {
@@ -144,6 +145,7 @@ export default function App() {
             </div>
 
             <div className="footer-credits">
+              <MusicToggleButton />
               <button
                 ref={themeToggleRef}
                 className="footer-theme-toggle"
