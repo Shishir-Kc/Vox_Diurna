@@ -1,6 +1,6 @@
-# Vox Diurna
+# Blog
 
-> Daily Voice — A curated blog by Shishir Khatri.
+> A curated blog by Shishir Khatri.
 
 Live: [https://vox-diurna.pages.dev](https://vox-diurna.pages.dev)
 
@@ -31,6 +31,8 @@ npm run dev     # development server
 npm run build   # production build
 npm run preview # preview production build
 ```
+
+The local frontend opens at [http://localhost:5173](http://localhost:5173). The API/Workers server can continue using port `8787`.
 
 ## Project Structure
 
