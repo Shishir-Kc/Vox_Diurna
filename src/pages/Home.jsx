@@ -79,9 +79,9 @@ export default function Home() {
       style={{ animationDelay: `${(offset + index) * 0.1}s` }}
     >
       <div className="post-card-image">
-        <span className="placeholder-icon">
-          {categoryIcons[post.category] || "◈"}
-        </span>
+        {post.image ? <img className="post-card-cover" src={post.image} alt={`${post.title} cover`} loading="lazy" /> : (
+          <span className="placeholder-icon">{categoryIcons[post.category] || "◈"}</span>
+        )}
         <span className="post-card-category">{post.category}</span>
       </div>
       <div className="post-card-body">
@@ -236,9 +236,9 @@ export default function Home() {
                     style={{ animationDelay: `${index * 0.1}s` }}
                   >
                     <div className="post-card-image">
-                      <span className="placeholder-icon">
-                        {categoryIcons[post.category] || "◈"}
-                      </span>
+                      {post.image ? <img className="post-card-cover" src={post.image} alt={`${post.title} cover`} loading="lazy" /> : (
+                        <span className="placeholder-icon">{categoryIcons[post.category] || "◈"}</span>
+                      )}
                       <span className="post-card-category">{post.category}</span>
                     </div>
                     <div className="post-card-body">
@@ -278,9 +278,9 @@ export default function Home() {
                   style={{ animationDelay: `${(featuredPosts.length + index) * 0.1}s` }}
                 >
                   <div className="post-card-image">
-                    <span className="placeholder-icon">
-                      {categoryIcons[post.category] || "◈"}
-                    </span>
+                    {post.image ? <img className="post-card-cover" src={post.image} alt={`${post.title} cover`} loading="lazy" /> : (
+                      <span className="placeholder-icon">{categoryIcons[post.category] || "◈"}</span>
+                    )}
                     <span className="post-card-category">{post.category}</span>
                   </div>
                   <div className="post-card-body">

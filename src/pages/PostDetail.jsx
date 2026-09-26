@@ -37,6 +37,7 @@ export default function PostDetail() {
         if (ogDesc) {
           ogDesc.setAttribute('content', data.excerpt || `Read ${data.title} on Vox Diurna`);
         }
+        if (data.image) document.querySelector('meta[property="og:image"]')?.setAttribute('content', data.image);
         document.querySelector('meta[property="og:url"]')?.setAttribute('content', `https://blog.shishirkhatri.com.np/blog/${slug}/${id}`);
         
         const schema = {
@@ -44,6 +45,7 @@ export default function PostDetail() {
           "@type": "BlogPosting",
           "headline": data.title,
           "description": data.excerpt,
+          ...(data.image ? { "image": data.image } : {}),
           "author": {
             "@type": "Person",
             "name": "Shishir Khatri",
@@ -146,6 +148,7 @@ export default function PostDetail() {
       </Link>
 
       <header className="post-header">
+        {post.image && <img className="post-cover-image" src={post.image} alt={`${post.title} cover`} />}
         <span className="post-category-tag">{post.category}</span>
         <h1 className="post-page-title">{post.title}</h1>
         <ReactMarkdown className="post-page-excerpt" remarkPlugins={[remarkGfm, remarkBreaks]}>
