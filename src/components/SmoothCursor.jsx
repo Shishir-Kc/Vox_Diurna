@@ -103,8 +103,10 @@ export default function SmoothCursor() {
       active = shouldEnable;
       if (active) {
         document.body.classList.add('smooth-cursor-active');
+        document.documentElement.classList.add('smooth-cursor-active');
       } else {
         document.body.classList.remove('smooth-cursor-active');
+        document.documentElement.classList.remove('smooth-cursor-active');
         hasPosition = false;
         lastPointer = null;
         stopAnimation();
@@ -204,6 +206,7 @@ export default function SmoothCursor() {
       window.removeEventListener('pointerleave', hide);
       document.removeEventListener('visibilitychange', onVisibilityChange);
       document.body.classList.remove('smooth-cursor-active');
+      document.documentElement.classList.remove('smooth-cursor-active');
       window.clearTimeout(scaleTimeout);
       stopAnimation();
     };
