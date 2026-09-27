@@ -2,6 +2,45 @@ import { useEffect, useRef } from 'react';
 
 const DESKTOP_POINTER_QUERY = '(any-hover: hover) and (any-pointer: fine)';
 const SPRING = { damping: 45, stiffness: 400, mass: 1, restDelta: 0.001 };
+const LINK_MAGNET_RADIUS = 140;
+const LINK_MAGNET_STRENGTH = 0.42;
+const LINK_MAGNET_MAX_OFFSET = 32;
+
+function getMagneticPoint(x, y) {
+  const links = document.querySelectorAll('a');
+  let closestLink = null;
+  let closestDistance = LINK_MAGNET_RADIUS;
+
+  for (const link of links) {
+    if (!link.textContent?.trim()) continue;
+    const rect = link.getBoundingClientRect();
+    if (rect.width === 0 || rect.height === 0) continue;
+
+    const nearestX = Math.max(rect.left, Math.min(x, rect.right));
+    const nearestY = Math.max(rect.top, Math.min(y, rect.bottom));
+    const distance = Math.hypot(x - nearestX, y - nearestY);
+    if (distance < closestDistance) {
+      closestLink = rect;
+      closestDistance = distance;
+    }
+  }
+
+  if (!closestLink) return { x, y };
+
+  const centerX = closestLink.left + closestLink.width / 2;
+  const centerY = closestLink.top + closestLink.height / 2;
+  const deltaX = centerX - x;
+  const deltaY = centerY - y;
+  const distanceToCenter = Math.hypot(deltaX, deltaY);
+  if (!distanceToCenter) return { x, y };
+
+  const proximity = 1 - closestDistance / LINK_MAGNET_RADIUS;
+  const pull = Math.min(distanceToCenter * LINK_MAGNET_STRENGTH * proximity, LINK_MAGNET_MAX_OFFSET);
+  return {
+    x: x + (deltaX / distanceToCenter) * pull,
+    y: y + (deltaY / distanceToCenter) * pull,
+  };
+}
 
 function DefaultCursor() {
   return (
@@ -149,10 +188,12 @@ export default function SmoothCursor() {
     const onPointerMove = (event) => {
       if (!active || event.pointerType === 'touch') return;
 
+      const magneticPoint = getMagneticPoint(event.clientX, event.clientY);
+
       const now = event.timeStamp || performance.now();
       if (!hasPosition) {
-        current.x = target.x = event.clientX;
-        current.y = target.y = event.clientY;
+        current.x = target.x = magneticPoint.x;
+        current.y = target.y = magneticPoint.y;
         hasPosition = true;
         lastPointer = { x: event.clientX, y: event.clientY, time: now };
         render();
@@ -175,8 +216,8 @@ export default function SmoothCursor() {
           }, 150);
         }
         lastPointer = { x: event.clientX, y: event.clientY, time: now };
-        target.x = event.clientX;
-        target.y = event.clientY;
+        target.x = magneticPoint.x;
+        target.y = magneticPoint.y;
       }
 
       scheduleFrame();
