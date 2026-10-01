@@ -2,9 +2,9 @@ import { useEffect, useRef } from 'react';
 
 const DESKTOP_POINTER_QUERY = '(any-hover: hover) and (any-pointer: fine)';
 const SPRING = { damping: 45, stiffness: 400, mass: 1, restDelta: 0.001 };
-const LINK_MAGNET_RADIUS = 140;
-const LINK_MAGNET_STRENGTH = 0.42;
-const LINK_MAGNET_MAX_OFFSET = 32;
+const LINK_MAGNET_RADIUS = 120;
+const LINK_MAGNET_STRENGTH = 0.3;
+const LINK_MAGNET_MAX_OFFSET = 16;
 
 function getMagneticPoint(x, y) {
   const links = document.querySelectorAll('a');
@@ -27,6 +27,12 @@ function getMagneticPoint(x, y) {
 
   if (!closestLink) return { x, y };
 
+  const pointerIsInsideLink = x >= closestLink.left
+    && x <= closestLink.right
+    && y >= closestLink.top
+    && y <= closestLink.bottom;
+  if (pointerIsInsideLink) return { x, y };
+
   const centerX = closestLink.left + closestLink.width / 2;
   const centerY = closestLink.top + closestLink.height / 2;
   const deltaX = centerX - x;
@@ -34,7 +40,8 @@ function getMagneticPoint(x, y) {
   const distanceToCenter = Math.hypot(deltaX, deltaY);
   if (!distanceToCenter) return { x, y };
 
-  const proximity = 1 - closestDistance / LINK_MAGNET_RADIUS;
+  const proximityProgress = 1 - closestDistance / LINK_MAGNET_RADIUS;
+  const proximity = proximityProgress * proximityProgress * (3 - 2 * proximityProgress);
   const pull = Math.min(distanceToCenter * LINK_MAGNET_STRENGTH * proximity, LINK_MAGNET_MAX_OFFSET);
   return {
     x: x + (deltaX / distanceToCenter) * pull,

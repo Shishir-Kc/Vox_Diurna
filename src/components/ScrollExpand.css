@@ -77,13 +77,13 @@
   justify-content: center;
   margin: 0;
   padding: 0 6%;
-  color: #fff;
+  color: #1A1A1A;
+  font-family: var(--font-editorial);
   font-size: var(--scroll-expand-title-size);
-  font-weight: 700;
+  font-weight: 500;
   letter-spacing: -0.03em;
   line-height: 1;
   text-align: center;
-  text-shadow: 0 2px 24px rgb(0 0 0 / 45%);
   pointer-events: none;
   will-change: opacity, transform;
 }
